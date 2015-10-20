@@ -7,7 +7,7 @@ package constants;
  * @author kaneshirok
  *
  */
-public final class HabConstant {
+public class HabConstant {
 
 	public static final String TEST = "test";
 }
