@@ -1,6 +1,6 @@
 public class MyQuestion {
 
-	public String question;
+	private String question;
 
 	public boolean isSet;
 

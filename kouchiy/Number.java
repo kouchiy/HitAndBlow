@@ -1,33 +1,48 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
+import constants.Num;
+import constants.Pos;
 
 
 
-public class Number implements NoNoObject {
 
-	// 決定 *優先度とは別物 TODO
-	public boolean fix;
+public class Number implements NoNoObject<Position> {
 
-	// 位置 *使いどころがまだわからない TODO
-	public Positions positions;
+	/**
+	 * 目標
+	 */
+	public boolean isTarget;
+
+	public HashMap<Pos, Boolean> posWithBoolMap;
+
+	/**
+	 * 位置fix
+	 */
+	public NoNoObject<Position> fix;
 
 	// 番号
-	private No no;
+	private Num num;
 
 	// 履歴
-	public Histories histories;
+	public Histories<NumHistory> histories;
 
-	public Number(char no) throws Exception {
-		this.no = No.valueOf(no);
-		this.histories = new Histories();
+	public Number(Num num, byte keta) throws Exception {
+		this.num = num;
+		this.histories = new Histories<NumHistory>();
+		this.posWithBoolMap = Positions.getPoss(keta);
 	}
 
 	@Override
 	public String toString() {
-		return this.no.toString();
+		return this.num.toString();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-        if((obj instanceof Number) && (((Number)obj).no == this.no)){
+        if((obj instanceof Num) && (((Num)obj) == this.num)){
             return true ;
         }
         else{
@@ -37,62 +52,50 @@ public class Number implements NoNoObject {
 
 	@Override
 	public int hashCode() {
-		return Integer.parseInt("" + this.no);
+		return Integer.parseInt("" + this.num);
 	}
 
+	@Override
+	public boolean isMatch(Position pos) {
+		if (pos == null || this.fix == null) {
+			return false;
+		}
+		return fix.equals(pos);
+	}
 
-	enum No {
+	public boolean isFix() {
+		return this.fix != null;
+	}
 
-		ONE(0.0, '1')
-		,TWO(0.0, '2')
-		,THREE(0.0, '3')
-		,FOUR(0.0, '4')
-		,FIVE(0.0, '5')
-		,SIX(0.0, '6')
-		,SEVEN(0.0, '7')
-		,EIGHT(0.0, '8')
-		,NINE(0.0, '9')
-		,ZERO(0.0, '0')
-		;
+	public boolean isPossible() {
 
-		double sort;
-		char num;
+		List<Pos> possibilities = this.getPossiblities();
 
-		private No (double _sort, char _num) {
-			this.sort = _sort;
-			this.num = _num;
-		};
+		if (possibilities.size() == 0) {
+			return false;
+		}
 
-		public static No valueOf(char no) throws Exception {
+		return true;
+	}
 
-			switch (no) {
-			case '0': return ZERO;
-			case '1': return ONE;
-			case '2': return TWO;
-			case '3': return THREE;
-			case '4': return FOUR;
-			case '5': return FIVE;
-			case '6': return SIX;
-			case '7': return SEVEN;
-			case '8': return EIGHT;
-			case '9': return NINE;
+	public List<Pos> getPossiblities() {
+
+		List<Pos> results = new ArrayList<>();
+		for (Entry<Pos, Boolean> set : this.posWithBoolMap.entrySet()) {
+			if (set.getValue()) {
+				results.add(set.getKey());
 			}
-			throw new Exception();
 		}
 
-		@Override
-		public String toString() {
-			return String.valueOf(this.num);
+		return results;
+	}
+
+	public void removeAllPos() {
+
+		for (Entry<Pos, Boolean> set : this.posWithBoolMap.entrySet()) {
+			set.setValue(false);
 		}
 
-		public void setSort(double _sort) {
-			this.sort = _sort;
-		}
-}
-
-
-	public Character getCharValue() {
-		return this.no.num;
 	}
 
 }

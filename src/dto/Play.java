@@ -25,10 +25,22 @@ public class Play extends PlayNoNo {
 
 		NoNo noNo = new NoNo(super.correctAns, this.getLast());
 
+		boolean _finish = false;
 		if (noNo.run()) {
-			finish = true;
+			_finish = true;
 			this.correctAns = super.correctAns;
 		}
+
+		// TODO test
+		String first = "";
+		if (this.size() == 1) {
+			first = "       " + super.correctAns + "\n";
+		}
+		System.out.print(first);
+		String qTimes = "" + String.format("%1$5d  ", this.size());
+		System.out.println(qTimes  + this.getLast().question + "  " + this.getLast().answer);
+
+		this.finish = _finish;
 	}
 
 

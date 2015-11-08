@@ -1,32 +1,53 @@
 import java.util.HashMap;
 
+import constants.Num;
+import constants.Pos;
 
-public class Positions extends HashMap<Byte, Position> {
+public class Positions extends HashMap<Pos, Position> {
 
-//	public final List<Position> positions;
-
-	public Positions(byte keta) {
-		for (Position.Pos pos : Position.Pos.values()) {
+	public Positions(byte keta, int numCnt) {
+		for (Pos pos : Pos.values()) {
+			if (keta == 0) {
+				return;
+			}
 			try {
-				this.put(pos.positionNo, new Position(pos.positionNo));
+				this.put(pos, new Position(pos, numCnt));
+				keta--;
 			} catch (Exception e) {
-				System.out.println("public Positions(byte keta)" +e);;
+				System.out.println("public Positions(byte keta)" + e);
+				;
 			}
 		}
 	}
 
+	public static HashMap<Pos, Boolean> getPoss(byte keta) {
 
+		HashMap<Pos, Boolean> poss = new HashMap<>(keta);
 
-//	public Position p1 = Position.P1;
-//	public Position p2 = Position.P2;
-//	public Position p3 = Position.P3;
-//	public Position p4 = Position.P4;
-//	public Position p5 = Position.P5;
-//	public Position p6 = Position.P6;
-//	public Position p7 = Position.P7;
-//	public Position p8 = Position.P8;
-//	public Position p9 = Position.P9;
-//	public Position p0 = Position.P0;
+		for (Pos pos : Pos.values()) {
+			if (keta == 0) {
+				return poss;
+			}
+			try {
+				poss.put(pos, true);
+				keta--;
+			} catch (Exception e) {
+				System.out
+						.println("public static HashMap<Pos, Boolean> getPoss(byte keta)"
+								+ e);
+			}
+		}
+		return null;
+	}
+
+	public void removeNumAllPos(Num num) {
+
+		for (Position pos : this.values()) {
+
+			pos.removeNum(num);
+
+		}
+
+	}
 
 }
-

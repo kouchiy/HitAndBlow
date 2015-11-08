@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Histories extends ArrayList<History> {
+public class Histories<E> extends ArrayList<History> {
 
 //	@Override
 //	public boolean add(History e) {

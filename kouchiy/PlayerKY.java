@@ -1,13 +1,15 @@
-
 import java.util.HashMap;
 
 import players.Player;
 import players.PlayerInterface;
+import constants.Num;
+import constants.Pos;
 import dto.Play;
 import dto.QA;
 
 public class PlayerKY extends Player implements PlayerInterface {
 
+	private Histories<QAHistory> qaHistories;
 	private Positions positions;
 	private Numbers numbers;
 	private HashMap<Character, Number> noNoMap;
@@ -15,11 +17,19 @@ public class PlayerKY extends Player implements PlayerInterface {
 	private MyQuestion myQ;
 
 	private int stage;
+	private boolean demo = false;
 
-	public PlayerKY(byte keta) {
-		super(keta);
-		this.positions = new Positions(keta);
-		this.numbers = new Numbers();
+	public PlayerKY(byte keta, int numCnt, boolean... demo) {
+		this(keta, numCnt);
+		if (demo.length > 0)
+			this.demo = demo[0];
+	}
+
+	public PlayerKY(byte keta, int numCnt) {
+		super(keta, numCnt);
+		this.qaHistories = new Histories<QAHistory>();
+		this.positions = new Positions(keta, numCnt);
+		this.numbers = new Numbers(keta, numCnt);
 		this.noNoMap = new HashMap<>();
 		this.picUpMap = new HashMap<>();
 		this.myQ = new MyQuestion(keta);
@@ -28,65 +38,119 @@ public class PlayerKY extends Player implements PlayerInterface {
 	@Override
 	public String run(Play play) throws Exception {
 
+		if (this.demo) {
+			return super.getRandomNumbers(play);
+		}
+
 		final int STAGE1 = 1;
-//		this.test1();
+		final int STAGE2 = 2;
 
 		// まずランダム番号で初期化
 		String answer = super.getRandomNumbers(play);
 
 		for (QA qa : play) {
-			this.loadQa(qa);
+			// 現時点の全てのQAをロード
+			this.loadQA(qa);
+
+			// 同時にクリティカルを探す
+			this.search(qa);
 		}
 
 		// ステージ初期化
 		stage = 1;
 
-//		// エンドループ防止でとりあえず回数決める
-//		int roop = 1;
-//		for (; roop != 0;) {
-//			 roop--;
+		// // エンドループ防止でとりあえず回数決める
+		// int roop = 1;
+		// for (; roop != 0;) {
+		// roop--;
 
-//			System.out.print("ループ" + roop);
+		// System.out.print("ループ" + roop);
 
-			Sorter.sort(stage, numbers);
+		// 優先とか決めるはずだった　今は方向性変りそう
+		Sorter.sort(stage, numbers);
 
-			switch (stage) {
-			case STAGE1: // ノバラ x 3
-				this.noOverLap();
-
-				break;
-
-			default:
+		switch (stage) {
+		case STAGE1: // ノバラ
+			if (this.noOverLap()) {
 				break;
 			}
+		case STAGE2: // ノバラfalseならnumFixを探す
+			if (this.findNumFix()) {
 
-			// TODO 保留　イメージは番号（候補）をPUできたらそれらを並び替えてMyQuestionを決定する
-			if (this.picUpNumber(stage)) {
-
-//				this.sortingQuestion();
 			}
 
-//			PlayerTest.testHistoryView(this.numbers, this.positions);
+		default:
+			break;
+		}
 
+		// TODO 保留　イメージは番号（候補）をPUできたらそれらを並び替えてMyQuestionを決定する
+		if (this.picUpNumber(stage)) {
 
-			PlayerTest.outMyQuestion(this.myQ);
-			if (this.myQ.isSet) {
-				answer =  this.myQ.getQuestion();
-			}
+			// this.sortingQuestion();
+		}
 
-//		}
+		// TODO
+		// PlayerTest.testHistoryView(this.numbers, this.positions);
+
+		if (this.myQ.isSet) {
+			answer = this.myQ.getQuestion();
+		}
+
+//		System.out.println("質問 " + (play.size() + 1) + " 【 " + answer + " 】");
+
+//		if (play.size() % 2 == 0)
+			PlayerTest.testPossibilityView(this.numbers, this.positions);
+
+		// }
 
 		return answer;
 	}
 
-	private void noOverLap() {
+	private void search(QA qa) {
+
+		if (Searcher.isNoNo(qa)) {
+			// NoNo
+			this.removeNoNo(qa.question);
+
+			// TODO
+		}
+
+		if (Searcher.isAllBall(qa)) {
+			// 逆値をNoNoListへadd
+			this.removeNoNoReverse(qa.question);
+
+			// TODO qaListから過去のstrikeを走査し、NPFixを探す
+
+		}
+
+		if (Searcher.isAllCnt(qa)) {
+			// 逆値をNoNoListへadd
+			this.removeNoNoReverse(qa.question);
+
+		}
+	}
+
+	/**
+	 * @return numFixなければfalse
+	 */
+	private boolean findNumFix() {
+		// TODO 自動生成されたメソッド・スタブ
+		return false;
+	}
+
+	/**
+	 * @return ノバラ終わってもMyQが完成しないならfalse
+	 */
+	private boolean noOverLap() {
 
 		for (Number num : this.numbers.values()) {
 			if (num.histories.size() == 0) {
 				this.myQ.addNum(num.toString());
-				if (this.myQ.isSet) return;
+				if (this.myQ.isSet)
+					return true;
 			}
 		}
+		return false;
 	}
 
 	private boolean picUpNumber(int _stage) {
@@ -95,91 +159,71 @@ public class PlayerKY extends Player implements PlayerInterface {
 		return false;
 	}
 
-	private void test1() throws Exception {
+	private void loadQA(QA qa) {
 
-		Number no1 = new Number('1');
-		Number no1_ = new Number('1');
-
-		if (no1.equals(no1_)) {
-			System.out.println("Number equals test success");
-//			return;
-		}
-		Position pos1 = new Position((byte) 1);
-		Position pos1_ = new Position((byte) 1);
-
-		if (pos1.equals(pos1_)) {
-			System.out.println("Position equals test success");
+		// 同じhistoryは記録しない
+		if (Historia.isSameHistory(qa, this.qaHistories)) {
 			return;
+		} else {
+			// 新たなhistoryを記録する
+			Historia.write(qa, this.qaHistories);
 		}
-		throw new Exception();
 
-	}
-
-	private void loadQa(QA qa) {
-
-		// 質問の番号の分
 		byte pCnt = 0; // 位置数
-		for (char num : qa.question.toCharArray()) {
+		// 質問の番号の分
+		for (char numChar : qa.question.toCharArray()) {
+
+			Num num = Num.get(numChar);
+			Pos pos = null;
+			for (Pos _pos : Pos.values()) {
+				if (_pos.ordinal() == pCnt)
+					pos = _pos;
+			}
 
 			pCnt++;
-
 			// 番号各々のhistoryへ記録 1スト1ボーを
-			HistoryWriter.write(this.numbers.get(num), qa.answer, this.positions.get(pCnt));
+			Historia.write(qa, this.numbers.get(num).histories,
+					this.positions.get(pos));
+			Historia.write(qa, this.positions.get(pos).histories,
+					this.numbers.get(num));
 
 		}
-
-
-		if (Searcher.isNoNo(qa)) {
-			this.addNoNoList(qa);
-		}
-
-		if (Searcher.isAllBall(qa)) {
-			// 逆値をNoNoListへadd
-			this.addNoNoListReverse(qa);
-
-			// TODO qaListから過去のstrikeを走査し、strikeを決定する
-
-		}
-
-		if (Searcher.isAllCnt(qa)) {
-			// 逆値をNoNoListへadd
-			this.addNoNoListReverse(qa);
-
-
-		}
-		// TODO 自動生成されたメソッド・スタブ
 
 	}
 
-	private void addNoNoListReverse(QA qa) {
+	private void removeNoNoReverse(String question) {
 
-		try {
-			for (Number no : this.numbers.values()) {
+		String reverse = "";
+		for (Number no : this.numbers.values()) {
+			boolean isAdd = false;
 
-				for (char c : qa.question.toCharArray()) {
+			for (char numChar : question.toCharArray()) {
 
-					Number num = new Number(c);
-					if (no.equals(num)) {
-						continue;
-					}
-					this.noNoMap.put(no.getCharValue(), no);
+				Num num = Num.get(numChar);
+				if (no.equals(num)) {
+					isAdd = false;
+					break;
 				}
+				isAdd = true;
 			}
-
-		} catch (Exception e) {
-			System.out.println("private void addNoNoListReverse(QA qa)" + e);
+			if (isAdd) {
+				reverse += String.valueOf(no);
+			}
 		}
+
+		this.removeNoNo(reverse);
 
 	}
 
-	private void addNoNoList(QA qa) {
+	private void removeNoNo(String question) {
 
-		for (char c : qa.question.toCharArray()) {
-			try {
-				this.noNoMap.put(new Character(c), new Number(c));
-			} catch (Exception e) {
-				System.out.println("private void addNoNoList(QA qa)" + e);
-			}
+		for (char numChar : question.toCharArray()) {
+
+			Num num = Num.get(numChar);
+
+			this.numbers.removeAllPos(num);
+			this.positions.removeNumAllPos(num);
+
 		}
 
 	}

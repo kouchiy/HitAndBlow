@@ -8,4 +8,10 @@ public class QA {
 	public String question;
 	public Answer answer = new Answer();
 
+	@Override
+	public String toString() {
+		String qa = "  [ "+ this.question + " ]  " + this.answer;
+		return qa;
+	}
+
 }

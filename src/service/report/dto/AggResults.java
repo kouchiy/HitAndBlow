@@ -13,7 +13,7 @@ public class AggResults {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sb = new StringBuffer("\n");
 		sb.append("  プレイヤー: " + this.playerName + "\n");
 		sb.append("    プレイ数: " + this.playTimesTotal + "\n");
 		sb.append("      正解数: " + this.finishTimesTotal + "\n");

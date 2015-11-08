@@ -1,5 +1,8 @@
 
-public interface NoNoObject {
+public interface NoNoObject<T> {
+
+
+	boolean isMatch(T obj);
 
 
 }

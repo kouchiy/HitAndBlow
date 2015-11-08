@@ -1,14 +1,15 @@
 package players;
-import players.Player;
-import players.PlayerInterface;
-import service.NumberFactory;
 import dto.Play;
 
 
 public class DemoPlayer extends Player implements PlayerInterface {
 
-	public DemoPlayer(byte keta) {
-		super(keta);
+//	public DemoPlayer(byte keta) {
+//		super(keta, 10);
+//	}
+
+	public DemoPlayer(byte keta, int numCnt) {
+		super(keta, numCnt);
 	}
 
 	@Override
@@ -17,16 +18,16 @@ public class DemoPlayer extends Player implements PlayerInterface {
 	}
 
 	protected String getRandomNumber(Play play) {
-		return demo();
+		return super.getRandomNumbers(play);
 	}
 
-	private String demo() {
-
-		String demoNum;
-
-		demoNum = NumberFactory.getNumbers(keta);
-
-		return demoNum;
-	}
+//	private String demo() {
+//
+//		String demoNum;
+//
+//		demoNum = NumberFactory.getNumbers(this.keta, this.numCnt);
+//
+//		return demoNum;
+//	}
 
 }

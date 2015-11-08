@@ -36,25 +36,26 @@ public class ManagementService {
 
 		int defultArgPlayTimes = 1;
 		int defultArgQLmitTimes = 100;
+		int defultArgNumCnt = 10;
 
-		if (optionalArgs.length == 2) {
+		if (optionalArgs.length == 3) {
+			defultArgPlayTimes = optionalArgs[0];
+			defultArgQLmitTimes = optionalArgs[1];
+			defultArgNumCnt = optionalArgs[2];
+		} else if (optionalArgs.length == 2) {
 			defultArgPlayTimes = optionalArgs[0];
 			defultArgQLmitTimes = optionalArgs[1];
 		} else if (optionalArgs.length == 1) {
 			defultArgPlayTimes = optionalArgs[0];
 		}
 
-		return this.gamePrivate(argKeta, argPlayerNames, defultArgPlayTimes, defultArgQLmitTimes);
+		return this.gamePrivate(argKeta, argPlayerNames, defultArgPlayTimes, defultArgQLmitTimes, defultArgNumCnt);
 	}
 
 	private GameRsults gamePrivate(byte argKeta, List<String> argPlayerNames,
-			int argPlayTimes, int argQLimitTimes) {
+			int argPlayTimes, int argQLimitTimes, int argNumCnt) {
 
-		System.out.printf("%d桁 player=%d プレイ数=%d 質限=%d \n\n",
-				argKeta, argPlayerNames.size(), argPlayTimes,
-				argQLimitTimes);
-
-		GameRsults gameResult = new GameRsults(argKeta, argPlayTimes);
+		GameRsults gameResult = new GameRsults(argKeta, argNumCnt, argPlayTimes);
 
 		ExecutorService threadPool = Executors.newFixedThreadPool(argPlayerNames
 				.size());
@@ -62,7 +63,7 @@ public class ManagementService {
 		Collection<Callable<Void>> processes = new LinkedList<>();
 
 		CorrectAnswerList correctAnswerList = new CorrectAnswerList(
-				argPlayTimes, argKeta);
+				argPlayTimes, argKeta, argNumCnt);
 
 		for (String playerName0 : argPlayerNames) {
 
@@ -77,17 +78,20 @@ public class ManagementService {
 					int playtime = 0; // TODO test
 					for (Play play : playList.plays) {
 
-						// playの度にplayerインスタンス生成
-						Player player = Player.getInstance(argKeta, playerName);
+						String correctAns = correctAnswerList.get(playtime); // TODO test
 
-						System.out.println("◆ player : " + playerName + " play : " + ++playtime);
+						// playの度にplayerインスタンス生成
+						Player player = Player.getInstance(argKeta, argNumCnt, playerName);
+
+						System.out.println("\n◆ player : " + playerName + " play : " + ++playtime);
 
 						boolean isFirstQRandomMode = player.firstQRandomMode;
 
 						if (isFirstQRandomMode) {
-							Player demoPlayer = Player.getInstance(argKeta, "DemoPlayer");
+							Player demoPlayer = Player.getInstance(argKeta, argNumCnt, "DemoPlayer");
 
 							while (true) {
+
 
 								QA qa;
 								try {
@@ -98,6 +102,7 @@ public class ManagementService {
 								}
 								play.addLast(qa);
 
+
 								if (play.finish) {
 									play.pop();
 									continue;
@@ -107,6 +112,7 @@ public class ManagementService {
 						}
 
 						while (true) {
+
 							QA qa;
 							try {
 								qa = new QA(player.run(play));
@@ -150,6 +156,9 @@ public class ManagementService {
 		} finally {
 			threadPool.shutdown();
 		}
+		System.out.printf("\n\n%d桁 数=%d player数=%d プレイ数=%d 質限=%d回 \n",
+				argKeta, argNumCnt, argPlayerNames.size(), argPlayTimes,
+				argQLimitTimes);
 		return gameResult;
 
 	}

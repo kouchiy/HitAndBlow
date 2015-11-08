@@ -6,7 +6,7 @@ import service.NumberFactory;
 
 public class CorrectAnswerList extends ArrayList<String> {
 
-	public CorrectAnswerList(int playTimes, byte keta, String... demoCorrectAnswers) {
+	public CorrectAnswerList(int playTimes, byte keta, int numCnt, String... demoCorrectAnswers) {
 
 		for (String demoAns : demoCorrectAnswers) {
 			this.add(demoAns);
@@ -17,7 +17,7 @@ public class CorrectAnswerList extends ArrayList<String> {
 		}
 
 		for (; playTimes != 0; playTimes--) {
-			String correctAns = NumberFactory.getNumbers(keta);
+			String correctAns = NumberFactory.getNumbers(keta, numCnt);
 			this.add(correctAns);
 		}
 	}

@@ -5,13 +5,28 @@ import java.util.TreeMap;
 
 public class NumberFactory {
 
-//	static Deque<No> numbers = new LinkedList<>();
-	static Map<Double, String> numbers = new TreeMap<>();
+	static Map<Double, Integer> numbers = new TreeMap<>();
 
-	public static synchronized String getNumbers(byte keta) {
+	public static String getNumbers(byte keta, int numCnt) {
+
+		if (numCnt < keta) {
+			numCnt = keta;
+		}
+		return getNumbersPrivate(keta, numCnt);
+	}
+
+	public static String getNumbers(byte keta) {
+		return getNumbersPrivate(keta, 10);
+	}
+
+	private static synchronized String getNumbersPrivate(byte keta, int numCnt) {
 		String nums = "";
-		lotorry();
-		for (String num : numbers.values()) {
+		lotorry(numCnt);
+		for (int num : numbers.values()) {
+
+//			if (numCnt < num) {
+//				continue;
+//			}
 			nums += num;
 			if (nums.length() == keta) {
 				break;
@@ -20,11 +35,14 @@ public class NumberFactory {
 		return nums;
 	}
 
-	private static void lotorry() {
+	private static void lotorry(int numCnt) {
 		numbers.clear();
 		for (No no : No.values()) {
 			no.setSort();
-			numbers.put(no.sort, no.toString());
+			numbers.put(no.sort, (int) no.num);
+			if (numCnt == numbers.size()) {
+				return;
+			}
 		}
 	}
 
@@ -49,6 +67,10 @@ public class NumberFactory {
 			this.sort = _sort;
 			this.num = (byte)_num;
 		};
+
+//		public int getInt() {
+//			return this.num;
+//		}
 
 		@Override
 		public String toString() {

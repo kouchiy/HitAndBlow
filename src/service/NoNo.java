@@ -52,21 +52,18 @@ public class NoNo {
 		// }
 
 		// 比較
-		if (this.correctAns.equals(qa.question)) {
-			// test
-//			System.out.println("正解： " + this.correctAns);
+		Answer answer = new Answer();
+		Validate.strikeBallJudge((byte) this.correctAns.length(),
+				this.correctAns, this.qa.question, answer);
+		this.qa.answer = answer;
+
+//		if (this.correctAns.equals(qa.question)) {
+			if (this.qa.answer.strike == this.qa.question.length()) {
 			return true;
 		} else {
-			Answer answer = new Answer();
-
-			Validate.strikeBallJudge((byte) this.correctAns.length(),
-					this.correctAns, this.qa.question, answer);
-
-			this.qa.answer = answer;
-
+			return false;
 		}
 
-		return false;
 	}
 
 }

@@ -24,35 +24,38 @@ public class Main {
 	private static void test3() {
 
 		byte keta = (byte) 3;
-		int playTimes = 1;
+		int numCnt = 5;
+		int playTimes = 2;
 		CorrectAnswerList correctAnswerList = new CorrectAnswerList(playTimes,
-				keta, "940");
+				keta, numCnt, "201");
 
 		String className = "PlayerKY";
 
-		Player player = Player.getInstance(keta, className);
 
 		PlayList playList = new PlayList(className, correctAnswerList);
 		try {
 			for (Play play : playList.plays) {
-				play.addLast(new QA(player.run(play))); // play.addLast(new QA("123")); // ノバラ1 : nono : nonoAdd 1 2 3
-				play.addLast(new QA(player.run(play))); // play.addLast(new QA("456")); // ノバラ2 : 1b   : 目標候補 get
-				play.addLast(new QA(player.run(play)));  //play.addLast(new QA("789")); // ノバラ3 : 1b   : 目標候補 get, 0fix
-				play.addLast(new QA("143")); // 目標候補から1つPU Pずらし target P2 and 4: 1s   : P2fix and 4fix = 4P2fix = nonoAdd 8 , nonoAdd 5 6
-				// この時点で、*4*
-				// 候補 0fix, 7, 9
-				// 正解候補 047, 049, 740, 749, 940, 947
+				Player player = Player.getInstance(keta, numCnt, className);
+
+				// test
+				play.addLast(new QA(player.run(play))); // play.addLast(new QA("012")); // ノバラ1 : nono : nonoAdd 0 1 2
+				play.addLast(new QA(player.run(play))); // play.addLast(new QA("345")); // ノバラ2 : 1b   : 目標候補 get
+				play.addLast(new QA(player.run(play)));  //play.addLast(new QA("678")); // ノバラ3 : 1b   : 目標候補 get, 9fix
+//				play.addLast(new QA("032")); // 目標候補から1つPU Pずらし target P1 and 3: 1s   : P1fix and 3fix = 3P1fix = nonoAdd 7 , nonoAdd 4 5
+				// この時点で、*3*
+				// 候補 9fix, 6, 8
+				// 正解候補 936, 938, 639, 638, 839, 836
 				// if (他fixあり) else ●
-				// 0fix の 考察[P]
+				// 9fix の 考察[P]
 				// if (履歴あり) ●
 				// else 正解候補しぼり
-				// 正解候補 047, 049, 740, xxx, 940, xxx
-				// fix以外の 7 9 考察[survive]
-				// 履歴 7 1, 9 1
-				// 7 の履歴 789 1b 7P1x
-                // 正解候補 047, 049, xxx, xxx, 940, xxx
-				// 9 の履歴 789 1b 9P3x
-				// 正解候補 047, xxx, xxx, xxx, 940, xxx
+				// 正解候補 936, 938, 639, xxx, 839, xxx
+				// fix以外の 6 8 考察[survive]
+				// 履歴 6 1, 8 1
+				// 6 の履歴 678 1b 6P0x
+                // 正解候補 936, 938, xxx, xxx, 839, xxx
+				// 8 の履歴 678 1b 8P2x
+				// 正解候補 936, xxx, xxx, xxx, 839, xxx
 
 				int testCnt = 1;
 				while (true) {
@@ -67,7 +70,7 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		GameRsults gameResults = new GameRsults(keta, playTimes);
+		GameRsults gameResults = new GameRsults(keta, numCnt, playTimes);
 		gameResults.playLists.add(playList);
 
 		List<AggResults> aggResultsList = new ArrayList<>();
@@ -84,7 +87,7 @@ public class Main {
 		int[][] array = { { 15, 2 }, { 1, 1 }, { 9, 5 }, { 12, 1 }, { 13, 3 },
 				{ 1, 1 }, };
 
-		PlayList testdata = new PlayList("", new CorrectAnswerList(0, (byte) 1)) {
+		PlayList testdata = new PlayList("", new CorrectAnswerList(0, (byte) 1, 1)) {
 			@Override
 			public PlayList makeTestData() {
 
@@ -110,17 +113,18 @@ public class Main {
 	private static void test1() {
 
 		byte keta = (byte) 3;
-		int qLimitTimes = 5;
+		int numCnt = 5;
+		int qLimitTimes = 100;
 
 		int playTimes = 3;
 
 		List<String> players = new ArrayList<>();
 		for (int i = 1; i != 0; i--) {
-			 players.add("players.DemoPlayer");
+//			 players.add("players.DemoPlayer");
 			players.add("PlayerKY");
 		}
 
-		GameRsults gameResults = new ManagementService().game(keta, players, playTimes, qLimitTimes);
+		GameRsults gameResults = new ManagementService().game(keta, players, playTimes, qLimitTimes, numCnt);
 
 		List<AggResults> aggResultsList = new ArrayList<>();
 		for (PlayList playList : gameResults.playLists) {
