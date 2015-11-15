@@ -1,3 +1,5 @@
+package nono.dto;
+
 import dto.QA;
 
 
@@ -9,11 +11,6 @@ public class NumHistory extends History {
 	public NumHistory(QA qa, Position position) {
 		super(qa);
 		this.position = position;
-	}
-
-	@Override
-	public void setPoint(double point) {
-		this.point = point;
 	}
 
 }

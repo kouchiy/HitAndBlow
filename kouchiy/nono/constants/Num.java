@@ -1,4 +1,4 @@
-package constants;
+package nono.constants;
 
 public enum Num {
 
@@ -41,6 +41,15 @@ public enum Num {
 		return String.valueOf(num);
 	}
 
+
+	public int toInt() {
+		int num = this.ordinal() + 1;
+		if (num > 9) {
+			return 0;
+		}
+		return num;
+	}
+
 	public boolean is(Num num) {
 		return this == num;
 	}
@@ -54,7 +63,5 @@ public enum Num {
 
 		return false;
 	}
-
-
 
 }

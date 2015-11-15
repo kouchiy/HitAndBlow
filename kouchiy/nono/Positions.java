@@ -1,7 +1,10 @@
+package nono;
+
 import java.util.HashMap;
 
-import constants.Num;
-import constants.Pos;
+import nono.constants.Num;
+import nono.constants.Pos;
+import nono.dto.Position;
 
 public class Positions extends HashMap<Pos, Position> {
 

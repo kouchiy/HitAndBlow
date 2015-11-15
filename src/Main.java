@@ -24,10 +24,10 @@ public class Main {
 	private static void test3() {
 
 		byte keta = (byte) 3;
-		int numCnt = 5;
-		int playTimes = 2;
+		int numCnt = 10;
+		int playTimes = 1;
 		CorrectAnswerList correctAnswerList = new CorrectAnswerList(playTimes,
-				keta, numCnt, "201");
+				keta, numCnt, "839");
 
 		String className = "PlayerKY";
 
@@ -38,9 +38,12 @@ public class Main {
 				Player player = Player.getInstance(keta, numCnt, className);
 
 				// test
-				play.addLast(new QA(player.run(play))); // play.addLast(new QA("012")); // ノバラ1 : nono : nonoAdd 0 1 2
-				play.addLast(new QA(player.run(play))); // play.addLast(new QA("345")); // ノバラ2 : 1b   : 目標候補 get
-				play.addLast(new QA(player.run(play)));  //play.addLast(new QA("678")); // ノバラ3 : 1b   : 目標候補 get, 9fix
+//				play.addLast(new QA(player.run(play)));
+//				play.addLast(new QA(player.run(play)));
+//				play.addLast(new QA(player.run(play)));
+				 play.addLast(new QA("012")); // ノバラ1 : nono : nonoAdd 0 1 2
+				 play.addLast(new QA("345")); // ノバラ2 : 1b   : 目標候補 get
+				play.addLast(new QA("678")); // ノバラ3 : 1b   : 目標候補 get, 9fix
 //				play.addLast(new QA("032")); // 目標候補から1つPU Pずらし target P1 and 3: 1s   : P1fix and 3fix = 3P1fix = nonoAdd 7 , nonoAdd 4 5
 				// この時点で、*3*
 				// 候補 9fix, 6, 8
@@ -113,15 +116,15 @@ public class Main {
 	private static void test1() {
 
 		byte keta = (byte) 3;
-		int numCnt = 5;
-		int qLimitTimes = 100;
+		int numCnt = 10;
+		int qLimitTimes = 30;
 
-		int playTimes = 3;
+		int playTimes = 10;
 
 		List<String> players = new ArrayList<>();
 		for (int i = 1; i != 0; i--) {
 //			 players.add("players.DemoPlayer");
-			players.add("PlayerKY");
+			players.add("nono.PlayerKY");
 		}
 
 		GameRsults gameResults = new ManagementService().game(keta, players, playTimes, qLimitTimes, numCnt);

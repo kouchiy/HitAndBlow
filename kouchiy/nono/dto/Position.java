@@ -1,25 +1,24 @@
+package nono.dto;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import constants.Num;
-import constants.Pos;
+import nono.Histories;
+import nono.Numbers;
+import nono.constants.Num;
+import nono.constants.Pos;
 
 
-public class Position implements NoNoObject<Number> {
-
-	/**
-	 * 目標
-	 */
-	public boolean isTarget;
+public class Position {
 
 	public HashMap<Num, Boolean> numWithBoolMap;
 
 	/**
 	 * 番号fix
 	 */
-	public NoNoObject<Number> fix;
+	public Number fix;
 
 	// 位置
 	private Pos pos;
@@ -49,7 +48,6 @@ public class Position implements NoNoObject<Number> {
 	}
 
 
-	@Override
 	public boolean isMatch(Number obj) {
 		if (obj == null || this.fix == null) {
 			return false;

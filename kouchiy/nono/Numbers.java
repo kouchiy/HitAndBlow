@@ -1,7 +1,10 @@
+package nono;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import constants.Num;
+import nono.constants.Num;
+import nono.dto.Number;
 
 public class Numbers extends LinkedHashMap<Num, Number> {
 
@@ -38,6 +41,14 @@ public class Numbers extends LinkedHashMap<Num, Number> {
 			this.get(num).removeAllPos();
 
 		}
+	}
+
+	public int getAllNumTotal() {
+		int total = 0;
+		for (Number number : this.values()) {
+			total += number.toInt();
+		}
+		return total;
 	}
 
 }

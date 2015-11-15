@@ -1,3 +1,5 @@
+package nono.dto;
+
 public class MyQuestion {
 
 	private String question;
@@ -28,8 +30,10 @@ public class MyQuestion {
 	}
 
 	public void setQuestion(String question) {
-		this.question = question;
-		this.isSet = this.question.length() == keta;
+		this.isSet = question.length() == keta;
+		if (this.isSet) {
+			this.question = question;
+		}
 	}
 
 	public void addNum(String num) {

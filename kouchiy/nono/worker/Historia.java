@@ -1,5 +1,14 @@
+package nono.worker;
+
 import java.util.Iterator;
 
+import nono.Histories;
+import nono.dto.History;
+import nono.dto.NumHistory;
+import nono.dto.Number;
+import nono.dto.Position;
+import nono.dto.PositionsHistory;
+import nono.dto.QAHistory;
 import dto.QA;
 
 
@@ -9,14 +18,15 @@ import dto.QA;
  */
 public class Historia {
 
-	public static boolean isSameHistory(QA qa, Histories<?> histories) {
+	public static boolean isSameHistory(String question, Histories<?> histories) {
 
 		Histories<?> hiss = histories;
 		for (Iterator<History> i = hiss.iterator(); i.hasNext();) {
 
 			History his = i.next();
 
-			if (qa.question.equals(his.question)) {
+			if (question.equals(his.question)) {
+//				System.out.println("---- Same Question ----");
 				return true;
 			}
 		}

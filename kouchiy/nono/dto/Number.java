@@ -1,27 +1,28 @@
+package nono.dto;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import constants.Num;
-import constants.Pos;
+import nono.Histories;
+import nono.Positions;
+import nono.constants.Num;
+import nono.constants.Pos;
 
 
 
 
-public class Number implements NoNoObject<Position> {
-
-	/**
-	 * 目標
-	 */
-	public boolean isTarget;
+public class Number {
 
 	public HashMap<Pos, Boolean> posWithBoolMap;
 
 	/**
 	 * 位置fix
 	 */
-	public NoNoObject<Position> fix;
+	private Position pFix;
+
+	private boolean fix;
 
 	// 番号
 	private Num num;
@@ -40,9 +41,13 @@ public class Number implements NoNoObject<Position> {
 		return this.num.toString();
 	}
 
+	public int toInt() {
+		return this.num.toInt();
+	}
+
 	@Override
 	public boolean equals(Object obj) {
-        if((obj instanceof Num) && (((Num)obj) == this.num)){
+        if((obj instanceof Number) && ((((Number)obj)).num == this.num)){
             return true ;
         }
         else{
@@ -52,19 +57,66 @@ public class Number implements NoNoObject<Position> {
 
 	@Override
 	public int hashCode() {
-		return Integer.parseInt("" + this.num);
+		return this.toInt();
 	}
 
-	@Override
 	public boolean isMatch(Position pos) {
-		if (pos == null || this.fix == null) {
+		if (pos == null || this.pFix == null) {
 			return false;
 		}
-		return fix.equals(pos);
+		return pFix.equals(pos);
+	}
+
+
+	public boolean isTarget() {
+
+		// target定義
+
+		// isPFixならfalse
+		if (isPFix()) return false;
+
+		// 判断材料がないならfalse
+		if (isJudgable()) return false;
+
+		return true;
+	}
+
+	private boolean isJudgable() {
+
+		// isJudgable定義
+
+		// 過去Cntがあればfalse
+		for (History his : this.histories) {
+			if (his.ball != 0 || his.strike != 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public void setPFix(Position position) {
+		this.set(position);
+	}
+
+	private void set(Position position) {
+		this.pFix = position;
+	}
+
+	public Position getPFix() {
+		return this.pFix;
+	}
+
+	public boolean isPFix() {
+		return this.pFix != null;
 	}
 
 	public boolean isFix() {
-		return this.fix != null;
+		return this.fix;
+	}
+
+	public void setFix() {
+		this.fix = true;
 	}
 
 	public boolean isPossible() {
@@ -97,5 +149,10 @@ public class Number implements NoNoObject<Position> {
 		}
 
 	}
+
+	public void removePos(Pos pos) {
+		this.posWithBoolMap.put(pos, false);
+	}
+
 
 }
