@@ -49,13 +49,13 @@ public class ManagementService {
 			defultArgPlayTimes = optionalArgs[0];
 		}
 
-		return this.gamePrivate(argKeta, argPlayerNames, defultArgPlayTimes, defultArgQLmitTimes, defultArgNumCnt);
+		return this.gamePrivate(argKeta, argPlayerNames, defultArgPlayTimes, defultArgQLmitTimes, (byte)defultArgNumCnt);
 	}
 
 	private GameRsults gamePrivate(byte argKeta, List<String> argPlayerNames,
-			int argPlayTimes, int argQLimitTimes, int argNumCnt) {
+			int argPlayTimes, int argQLimitTimes, byte argNumCnt) {
 
-		GameRsults gameResult = new GameRsults(argKeta, argNumCnt, argPlayTimes);
+		GameRsults gameResult = new GameRsults(argKeta, argNumCnt, argPlayTimes, argQLimitTimes);
 
 		ExecutorService threadPool = Executors.newFixedThreadPool(argPlayerNames
 				.size());
@@ -92,7 +92,6 @@ public class ManagementService {
 
 							while (true) {
 
-
 								QA qa;
 								try {
 									qa = new QA(demoPlayer.run(play));
@@ -101,7 +100,6 @@ public class ManagementService {
 									break;
 								}
 								play.addLast(qa);
-
 
 								if (play.finish) {
 									play.pop();
@@ -125,17 +123,9 @@ public class ManagementService {
 							if (play.finish
 									|| (isFirstQRandomMode && play.size() >= argQLimitTimes + 1)
 									|| (!isFirstQRandomMode && play.size() >= argQLimitTimes)) {
-								// // test
-								//
 								if (isFirstQRandomMode) {
-									// System.out.println(play.size() + " "
-									// + play.peekLast());
 									play.pollFirst();
 								}
-								//
-								// System.out.println(play.size() + " "
-								// + play.peekLast());
-
 								break;
 							}
 						}

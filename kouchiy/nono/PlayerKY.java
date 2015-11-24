@@ -27,13 +27,13 @@ public class PlayerKY extends Player implements PlayerInterface {
 
 	private boolean demo = false;
 
-	public PlayerKY(byte keta, int numCnt, boolean... demo) {
+	public PlayerKY(byte keta, byte numCnt, boolean... demo) {
 		this(keta, numCnt);
 		if (demo.length > 0)
 			this.demo = demo[0];
 	}
 
-	public PlayerKY(byte keta, int numCnt) {
+	public PlayerKY(byte keta, byte numCnt) {
 		super(keta, numCnt);
 		this.qaHistories = new Histories<QAHistory>();
 		this.positions = new Positions(keta, numCnt);

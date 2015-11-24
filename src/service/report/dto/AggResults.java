@@ -10,6 +10,7 @@ public class AggResults {
 	private double questionTimesMedian;
 	private double questionTimesDevAvg;
 	private int[][] questionTimesMode;
+	private double point;
 
 	@Override
 	public String toString() {
@@ -28,6 +29,7 @@ public class AggResults {
 
 		return sb.toString();
 	}
+
 	public String getPlayerName() {
 		return playerName;
 	}
@@ -75,6 +77,12 @@ public class AggResults {
 	}
 	public void setQuestionTimesMode(int[][] questionTimesMode) {
 		this.questionTimesMode = questionTimesMode;
+	}
+	public double getPoint() {
+		return this.point;
+	}
+	public void setPoint(double point) {
+		this.point = point;
 	}
 
 

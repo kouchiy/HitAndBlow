@@ -12,7 +12,7 @@ import dto.PlayList;
 
 public class Aggregater {
 
-	public static AggResults aggregate(PlayList playList) {
+	public static AggResults aggregate(PlayList playList, byte keta, int playTimes, int qLimitTimes, int numCnt) {
 
 		AggResults results = new AggResults();
 
@@ -62,7 +62,31 @@ public class Aggregater {
 		results.setQuestionTimesMedian(qTimesMedian);
 		results.setQuestionTimesDevAvg(questionTimesDevAvg);
 		results.setQuestionTimesMode(qTimeModes);
+
+		double point = calcPoint(results
+				                , keta
+				                , playTimes
+				                , qLimitTimes
+				                , numCnt
+				                );
+
+		results.setPoint(point);
+
 		return results;
+	}
+
+
+	public static double calcPoint(AggResults results, double keta, double playTimes, double qLimitTimes, double numCnt) {
+		double point = 0;
+
+		double x = (double)results.getFinishTimesTotal() / playTimes; // 正解数/プレイ数
+		double y = playTimes * qLimitTimes / (double)results.getQuestionTimesTotal(); //  プレイ数 * 質限数 / 質問回数合計
+		double z = qLimitTimes - results.getQuestionTimesMedian(); // 質限数 - 質問数中央値
+		double a = keta * numCnt / results.getQuestionTimesDevAvg(); // 桁 * 数 / 質問標準偏差
+
+		point = (x * 5) * (y * 3) * (z * 1) * (a * 1);
+
+		return point;
 	}
 
 	private static int[][] mode(TreeMap<Integer, Integer> qTimesMap) {

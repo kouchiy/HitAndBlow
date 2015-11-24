@@ -2,22 +2,22 @@ package players;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
+import number.Positions;
 import service.NumberFactory;
 import dto.Play;
+import dto.QA;
 
 public class Player {
 
 	protected byte keta;
-	protected int numCnt;
+	protected byte numCnt;
+	protected Sheet sheet;
 	public boolean firstQRandomMode;
 
-//	public Player(byte keta) {
-//		this.keta = keta;
-//		this.numCnt = 10;
-//	}
-
-	public Player(byte keta, int numCnt) {
+	public Player(byte keta, byte numCnt) {
 		if (numCnt < keta) {
 			numCnt = keta;
 		} else if (numCnt > 10) {
@@ -25,6 +25,8 @@ public class Player {
 		}
 		this.keta = keta;
 		this.numCnt = numCnt;
+
+		sheet = new Sheet(keta, numCnt);
 	}
 
 	// サブクラスがオーバーライドするメソッド
@@ -37,14 +39,67 @@ public class Player {
 		return NumberFactory.getNumbers(this.keta, this.numCnt);
 	}
 
-	public static Player getInstance(byte keta, int numCnt, String classN) {
+//	protected List<String> getPossibleAndFirstNumberList(Play play) {
+//
+//		List<String> numbers = new ArrayList<>();
+//
+//		for (String number : this.sheet.getNumbers()) {
+//
+//			boolean isOverLap = false;
+//			for (QA qa : play) {
+//				String question = qa.question;
+//				if (number.equals(question)) {
+//					isOverLap = true;
+//					break;
+//				}
+//			}
+//			if (isOverLap) {
+//				continue;
+//			} else {
+//				numbers.add(number);
+//			}
+//		}
+//
+//		return numbers;
+//	}
+
+	protected final List<String> getPossibleAndFirstNumberList(Play play, Positions argPositions) {
+
+		Positions positions = argPositions;
+		if (positions == null) {
+			positions = this.sheet;
+		}
+
+		List<String> numbers = new ArrayList<>();
+
+		for (String number : positions.getNumbers()) {
+
+			boolean isOverLap = false;
+			for (QA qa : play) {
+				String question = qa.question;
+				if (number.equals(question)) {
+					isOverLap = true;
+					break;
+				}
+			}
+			if (isOverLap) {
+				continue;
+			} else {
+				numbers.add(number);
+			}
+		}
+
+		return numbers;
+	}
+
+	public final static Player getInstance(byte keta, byte numCnt, String classN) {
 
 		Player player;
 
 		Class<? extends Player> clazz;
 		try {
 			clazz = Class.forName(classN).asSubclass(Player.class);
-			Class<?>[] types = {byte.class, int.class};
+			Class<?>[] types = {byte.class, byte.class};
 			@SuppressWarnings("unchecked")
 			Constructor<Player> constructor = (Constructor<Player>) clazz.getConstructor(types);
 

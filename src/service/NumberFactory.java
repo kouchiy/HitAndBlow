@@ -23,10 +23,6 @@ public class NumberFactory {
 		String nums = "";
 		lotorry(numCnt);
 		for (int num : numbers.values()) {
-
-//			if (numCnt < num) {
-//				continue;
-//			}
 			nums += num;
 			if (nums.length() == keta) {
 				break;
@@ -48,7 +44,8 @@ public class NumberFactory {
 
 	enum No {
 
-		ONE(0.0, 1)
+		ZERO(0.0, 0)
+		,ONE(0.0, 1)
 		,TWO(0.0, 2)
 		,THREE(0.0, 3)
 		,FOUR(0.0, 4)
@@ -57,7 +54,6 @@ public class NumberFactory {
 		,SEVEN(0.0, 7)
 		,EIGHT(0.0, 8)
 		,NINE(0.0, 9)
-		,ZERO(0.0, 0)
 		;
 
 		double sort;
@@ -67,10 +63,6 @@ public class NumberFactory {
 			this.sort = _sort;
 			this.num = (byte)_num;
 		};
-
-//		public int getInt() {
-//			return this.num;
-//		}
 
 		@Override
 		public String toString() {
